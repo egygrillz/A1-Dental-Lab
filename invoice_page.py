@@ -14,19 +14,27 @@ from bidi.algorithm import get_display
 class InvoicePDF(FPDF):
     def __init__(self):
         super().__init__()
-        # FIXED: Simplified path for Streamlit Cloud
-        font_dir = "fonts"
-        sans_path = os.path.join(font_dir, "DejaVuSans.ttf")
-        bold_path = os.path.join(font_dir, "DejaVuSans-Bold.ttf")
+        # List of possible names your folder might have on GitHub
+        possible_paths = [
+            "fonts",
+            "dejavu-fonts-ttf-2.37/ttf",
+            "A1-Dental-Lab/fonts"
+        ]
         
-        # Load fonts - Ensure these files are in your /fonts folder on GitHub
-        try:
-            self.add_font("DejaVu", "", sans_path, uni=True)
-            self.add_font("DejaVu", "B", bold_path, uni=True)
-        except:
-            # Silence error here to handle it in the UI if files are missing
-            pass
+        found = False
+        for folder in possible_paths:
+            sans_path = os.path.join(folder, "DejaVuSans.ttf")
+            bold_path = os.path.join(folder, "DejaVuSans-Bold.ttf")
+            
+            if os.path.exists(sans_path) and os.path.exists(bold_path):
+                self.add_font("DejaVu", "", sans_path, uni=True)
+                self.add_font("DejaVu", "B", bold_path, uni=True)
+                found = True
+                break
         
+        if not found:
+            print("CRITICAL: Font files not found in any expected directory")
+            
         self.set_right_margin(10)
         self.set_left_margin(10)
 
