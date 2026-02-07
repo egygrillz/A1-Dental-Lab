@@ -9,19 +9,23 @@ from arabic_reshaper import reshape
 from bidi.algorithm import get_display
 
 # =============================================================================
-#                           INVOICE PDF CLASS
+#                            INVOICE PDF CLASS
 # =============================================================================
 class InvoicePDF(FPDF):
     def __init__(self):
         super().__init__()
-        # Simplified for GitHub/Streamlit
+        # FIXED: Simplified path for Streamlit Cloud
         font_dir = "fonts"
         sans_path = os.path.join(font_dir, "DejaVuSans.ttf")
         bold_path = os.path.join(font_dir, "DejaVuSans-Bold.ttf")
         
-        # We tell FPDF where the Arabic-supporting fonts are
-        self.add_font("DejaVu", "", sans_path, uni=True)
-        self.add_font("DejaVu", "B", bold_path, uni=True)
+        # Load fonts - Ensure these files are in your /fonts folder on GitHub
+        try:
+            self.add_font("DejaVu", "", sans_path, uni=True)
+            self.add_font("DejaVu", "B", bold_path, uni=True)
+        except:
+            # Silence error here to handle it in the UI if files are missing
+            pass
         
         self.set_right_margin(10)
         self.set_left_margin(10)
@@ -106,7 +110,6 @@ class InvoicePDF(FPDF):
                     self.cell(cols[6], 10, code_val,    border=border_style, align='C', fill=fill)
                     self.ln()
             except Exception as e:
-                # Fallback for cases without proper teeth_map
                 self.set_font("DejaVu", "", 9)
                 self.cell(cols[0], 10, f"{row['price']:,.2f}", border=1, align='C', fill=fill)
                 self.cell(cols[1], 10, str(row['entry_date']), border=1, align='C', fill=fill)
@@ -183,19 +186,19 @@ def show_invoice_page(db):
                 pdf.draw_table(selected_df)
                 pdf.draw_total(total_sum)
                 
-                # The cloud needs an explicit encoding to handle the Arabic characters in the PDF buffer
-pdf_output = pdf.output(dest='S').encode('latin-1')
+                # ✅ FIXED: Use encode('latin-1') for cloud servers
+                pdf_output = pdf.output(dest='S').encode('latin-1')
 
-st.download_button(
-    label="📥 تحميل الملف",
-    data=pdf_output,
-    file_name=f"A1_Invoice_{selected_doctor.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
-    mime="application/pdf"
-)
+                st.download_button(
+                    label="📥 تحميل الملف",
+                    data=pdf_output,
+                    file_name=f"A1_Invoice_{selected_doctor.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+                    mime="application/pdf"
+                )
                 st.success("✅ تم إنشاء الفاتورة بنجاح!")
             except Exception as e:
                 st.error(f"❌ حدث خطأ أثناء إنشاء الفاتورة: {str(e)}")
-                st.info("تأكد من وجود ملفات الخطوط في المسار الصحيح")
+                st.info("تأكد من وجود ملفات الخطوط داخل مجلد اسمه fonts على GitHub")
 
         if st.button("✅ تأكيد التحصيل (مدفوع)", type="primary"):
             try:
@@ -208,5 +211,4 @@ st.download_button(
 
 
 if __name__ == "__main__":
-    print("invoice_page.py loaded successfully")
-    print("show_invoice_page function is defined →", "show_invoice_page" in globals())
+    pass
