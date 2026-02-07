@@ -1,24 +1,8 @@
-# A1 Dental Lab Management System
-# Python Dependencies
-
-# Core Framework
-streamlit==1.31.0
-
-# Data Handling
-pandas==2.1.0
-openpyxl==3.1.2  # For Excel export
-
-# PDF Generation
-fpdf==1.7.2
-
-# Arabic Text Support
-arabic-reshaper==3.0.0
-python-bidi==0.4.2
-
-# Charts and Visualization (for dashboard)
-plotly==5.17.0
-
-# Optional: For advanced features
-# python-dotenv==1.0.0  # For environment variables
-# schedule==1.2.0  # For automated tasks
-# pillow==10.0.0  # For image processing
+streamlit
+pandas
+openpyxl
+fpdf
+arabic-reshaper
+python-bidi
+plotly
+Pillow
