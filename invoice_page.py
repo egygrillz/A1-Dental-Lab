@@ -14,22 +14,14 @@ from bidi.algorithm import get_display
 class InvoicePDF(FPDF):
     def __init__(self):
         super().__init__()
-        # FIXED: Use correct font directory path
-        font_dir = "dejavu-fonts-ttf-2.37/ttf"  # Updated path
+        # Simplified for GitHub/Streamlit
+        font_dir = "fonts"
         sans_path = os.path.join(font_dir, "DejaVuSans.ttf")
         bold_path = os.path.join(font_dir, "DejaVuSans-Bold.ttf")
         
-        if os.path.exists(sans_path):
-            self.add_font("DejaVu", "", sans_path, uni=True)
-            self.add_font("DejaVu", "B", bold_path, uni=True)
-        else:
-            # Fallback: try fonts directory
-            font_dir = "fonts"
-            sans_path = os.path.join(font_dir, "DejaVuSans.ttf")
-            bold_path = os.path.join(font_dir, "DejaVuSans-Bold.ttf")
-            if os.path.exists(sans_path):
-                self.add_font("DejaVu", "", sans_path, uni=True)
-                self.add_font("DejaVu", "B", bold_path, uni=True)
+        # We tell FPDF where the Arabic-supporting fonts are
+        self.add_font("DejaVu", "", sans_path, uni=True)
+        self.add_font("DejaVu", "B", bold_path, uni=True)
         
         self.set_right_margin(10)
         self.set_left_margin(10)
@@ -191,15 +183,15 @@ def show_invoice_page(db):
                 pdf.draw_table(selected_df)
                 pdf.draw_total(total_sum)
                 
-                # ✅ FIXED: Removed double bytes() wrapping
-                pdf_bytes = bytes(pdf.output(dest='S'))
+                # The cloud needs an explicit encoding to handle the Arabic characters in the PDF buffer
+pdf_output = pdf.output(dest='S').encode('latin-1')
 
-                st.download_button(
-                    label="📥 تحميل الملف",
-                    data=pdf_bytes,
-                    file_name=f"A1_Invoice_{selected_doctor.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
-                    mime="application/pdf"
-                )
+st.download_button(
+    label="📥 تحميل الملف",
+    data=pdf_output,
+    file_name=f"A1_Invoice_{selected_doctor.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+    mime="application/pdf"
+)
                 st.success("✅ تم إنشاء الفاتورة بنجاح!")
             except Exception as e:
                 st.error(f"❌ حدث خطأ أثناء إنشاء الفاتورة: {str(e)}")
