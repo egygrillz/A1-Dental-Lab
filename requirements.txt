@@ -1,0 +1,46 @@
+# A1 Dental Lab Management System - Python Dependencies
+# Install with: pip install -r requirements.txt
+
+# Core Framework
+streamlit==1.31.0
+
+# Database
+pandas==2.1.4
+sqlite3worker==1.1.8  # For concurrent database access
+
+# PDF Generation
+fpdf2==2.7.7
+PyPDF2==3.0.1
+
+# Arabic Text Support
+arabic-reshaper==3.0.0
+python-bidi==0.4.2
+
+# Data Visualization
+plotly==5.18.0
+matplotlib==3.8.2
+seaborn==0.13.1
+
+# Excel Export (optional)
+openpyxl==3.1.2
+xlsxwriter==3.1.9
+
+# Date/Time
+python-dateutil==2.8.2
+
+# Image Processing
+Pillow==10.2.0
+
+# Utilities
+python-dotenv==1.0.0  # For environment variables
+pytz==2023.3  # Timezone support
+validators==0.22.0  # URL/email validation
+
+# Development Tools (optional)
+black==23.12.1  # Code formatting
+pylint==3.0.3  # Code linting
+pytest==7.4.3  # Testing
+
+# Performance
+streamlit-aggrid==0.3.4.post3  # Enhanced data grids (optional)
+streamlit-option-menu==0.3.6  # Better navigation (optional)
